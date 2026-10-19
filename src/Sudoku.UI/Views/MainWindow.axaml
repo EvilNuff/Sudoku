@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:views="using:Sudoku.UI.Views"
         x:Class="Sudoku.UI.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/sudoku.ico"
         Title="Sudoku"
         Width="1000" Height="760"
         MinWidth="420" MinHeight="640"

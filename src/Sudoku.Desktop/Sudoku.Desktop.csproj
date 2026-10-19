@@ -10,6 +10,7 @@
 
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>../Sudoku.UI/Assets/sudoku.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
