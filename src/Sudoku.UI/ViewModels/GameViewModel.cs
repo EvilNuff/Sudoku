@@ -376,6 +376,7 @@ public sealed partial class GameViewModel : PageViewModel
             session.IllegalMarks,
             _hint is null ? NoCells : _hint.HighlightCells.ToHashSet(),
             _hintStage >= 2 ? _hint?.Target : null,
+            _pickedDigit != 0,
             IsPaused);
 
         var counts = session.DigitCounts();

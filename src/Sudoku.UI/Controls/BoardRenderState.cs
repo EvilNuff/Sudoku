@@ -5,6 +5,7 @@ namespace Sudoku.UI.Controls;
 /// <summary>Everything the board needs to draw one frame. Immutable, so a new instance means "redraw".</summary>
 /// <param name="HighlightDigit">Digit to highlight across the board (0 for none).</param>
 /// <param name="IllegalMarks">Pencil-mark digits that clash with a placed number, drawn in red.</param>
+/// <param name="IsDigitPicked">A number is picked on the pad: its cells are emphasized and peer tinting is dropped.</param>
 /// <param name="IsContentHidden">True while paused: the grid is drawn without any digits.</param>
 public sealed record BoardRenderState(
     Board Board,
@@ -15,6 +16,7 @@ public sealed record BoardRenderState(
     IReadOnlyDictionary<Position, DigitSet> IllegalMarks,
     IReadOnlySet<Position> HintCells,
     Position? HintTarget,
+    bool IsDigitPicked,
     bool IsContentHidden);
 
 /// <summary>Square-board geometry shared by rendering and hit testing.</summary>

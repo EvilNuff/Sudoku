@@ -109,8 +109,14 @@ public sealed class SudokuBoard : Control
         if (State is { IsContentHidden: true })
             DrawCentered(context, "Paused", g.Size * 0.08, FontWeight.SemiBold, palette.PausedText,
                 new Point(g.Left + g.Size / 2, g.Top + g.Size / 2));
-        else if (State?.HintTarget is { } target)
-            context.DrawRectangle(null, palette.HintOutline, g.CellRect(target.Row, target.Col).Deflate(2));
+        else
+        {
+            // With a number picked, the last-clicked cell is outlined rather than filled so the picked number stands out.
+            if (State is { IsDigitPicked: true, Selected: { } selected })
+                context.DrawRectangle(null, palette.SelectedOutline, g.CellRect(selected.Row, selected.Col).Deflate(2));
+            if (State?.HintTarget is { } target)
+                context.DrawRectangle(null, palette.HintOutline, g.CellRect(target.Row, target.Col).Deflate(2));
+        }
     }
 
     private BoardGeometry Geometry() => BoardGeometry.For(Bounds.Width, Bounds.Height, Inset);
@@ -118,6 +124,8 @@ public sealed class SudokuBoard : Control
     private static IBrush? TintFor(BoardRenderState state, Position position, BoardPalette palette)
     {
         var cell = state.Board[position];
+        if (state.IsDigitPicked)
+            return PickedTintFor(state, position, cell, palette);
         if (state.Selected == position)
             return palette.SelectedTint;
         if (state.Conflicts.Contains(position))
@@ -131,6 +139,20 @@ public sealed class SudokuBoard : Control
             return palette.MarkTint;
         if (state.Selected is { } selected && selected.SharesUnitWith(position))
             return palette.PeerTint;
+        return null;
+    }
+
+    /// <summary>Number-first mode: the picked number's cells get a strong fill, its notes a medium one, nothing else.</summary>
+    private static IBrush? PickedTintFor(BoardRenderState state, Position position, Cell cell, BoardPalette palette)
+    {
+        if (state.Conflicts.Contains(position))
+            return palette.ConflictTint;
+        if (state.HintCells.Contains(position))
+            return palette.HintTint;
+        if (cell.Value == state.HighlightDigit)
+            return palette.SelectedTint;
+        if (cell.IsEmpty && (cell.CornerMarks.Contains(state.HighlightDigit) || cell.CenterMarks.Contains(state.HighlightDigit)))
+            return palette.SameDigitTint;
         return null;
     }
 
