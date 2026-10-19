@@ -1,0 +1,11 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="using:Sudoku.UI.Views"
+        x:Class="Sudoku.UI.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Sudoku"
+        Width="1000" Height="760"
+        MinWidth="420" MinHeight="640"
+        WindowStartupLocation="CenterScreen">
+    <views:MainView />
+</Window>

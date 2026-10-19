@@ -1,0 +1,86 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Sudoku.UI.ViewModels"
+             xmlns:controls="using:Sudoku.UI.Controls"
+             xmlns:game="using:Sudoku.Core.Game"
+             x:Class="Sudoku.UI.Views.GameView"
+             x:DataType="vm:GameViewModel">
+    <!-- Row/column layout is switched in code-behind: side-by-side when wide, stacked when narrow. -->
+    <Grid x:Name="Root" Margin="16">
+        <Panel x:Name="BoardHost">
+            <controls:SudokuBoard State="{Binding BoardState}"
+                                  CellPressedCommand="{Binding SelectCellCommand}" />
+            <Button Classes="accent" Content="Resume" Width="140" Height="44"
+                    HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,110,0,0"
+                    IsVisible="{Binding IsPaused}" Command="{Binding TogglePauseCommand}" />
+        </Panel>
+
+        <StackPanel x:Name="ControlsPanel" Spacing="12">
+            <Grid ColumnDefinitions="Auto,*">
+                <Button Content="‹ Menu" HorizontalAlignment="Left" Command="{Binding BackToMenuCommand}" />
+                <TextBlock Grid.Column="1" Text="{Binding Title}" Classes="muted"
+                           HorizontalAlignment="Right" VerticalAlignment="Center" />
+            </Grid>
+
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel>
+                    <TextBlock Text="{Binding TimerText}" FontSize="34" FontWeight="SemiBold" />
+                    <StackPanel Orientation="Horizontal" Spacing="16">
+                        <TextBlock Text="{Binding HintsText}" Classes="muted" />
+                        <TextBlock Text="{Binding MistakesText}" Classes="muted" IsVisible="{Binding ShowMistakeCounter}" />
+                    </StackPanel>
+                </StackPanel>
+                <Button Grid.Column="1" Content="Pause" Width="90" VerticalAlignment="Center"
+                        Command="{Binding TogglePauseCommand}" IsVisible="{Binding !IsPaused}" />
+            </Grid>
+
+            <StackPanel Spacing="6">
+                <TextBlock Text="Enter as" Classes="muted" FontSize="12" />
+                <UniformGrid Columns="3" Margin="-3,0">
+                    <Button Classes="mode" Classes.selected="{Binding IsValueMode}" Content="Numbers"
+                            ToolTip.Tip="Pick a number, then click cells to place it (Space cycles modes)"
+                            Command="{Binding SetModeCommand}" CommandParameter="{x:Static game:EntryMode.Value}" />
+                    <Button Classes="mode" Classes.selected="{Binding IsCornerMode}" Content="Corner notes"
+                            ToolTip.Tip="Pick a number, then click cells to toggle a corner note (Shift+digit)"
+                            Command="{Binding SetModeCommand}" CommandParameter="{x:Static game:EntryMode.CornerMark}" />
+                    <Button Classes="mode" Classes.selected="{Binding IsCenterMode}" Content="Center notes"
+                            ToolTip.Tip="Pick a number, then click cells to toggle a center note (Ctrl+digit)"
+                            Command="{Binding SetModeCommand}" CommandParameter="{x:Static game:EntryMode.CenterMark}" />
+                </UniformGrid>
+                <TextBlock Text="{Binding ModeDescription}" Classes="muted" FontSize="12" TextWrapping="Wrap" />
+            </StackPanel>
+
+            <ItemsControl ItemsSource="{Binding Digits}" Margin="-3,0">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="3" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:DigitButtonViewModel">
+                        <Button Classes="pad" Classes.corner="{Binding IsCornerMode}" Classes.center="{Binding IsCenterMode}" Classes.picked="{Binding IsPicked}"
+                                Content="{Binding Label}" Opacity="{Binding Opacity}"
+                                Command="{Binding Command}" CommandParameter="{Binding Digit}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <UniformGrid Columns="4" Margin="-3,0">
+                <Button Classes="action" Content="Undo" Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndo}" />
+                <Button Classes="action" Content="Redo" Command="{Binding RedoCommand}" IsEnabled="{Binding CanRedo}" />
+                <Button Classes="action" Content="Erase" Command="{Binding EraseCommand}" />
+                <Button Classes="action accent" Content="{Binding HintButtonText}" Command="{Binding HintCommand}" />
+            </UniformGrid>
+
+            <Border Classes="card" IsVisible="{Binding HasHint}">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="{Binding HintTitle}" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding HintExplanation}" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock x:Name="KeyHelp" Classes="muted" FontSize="12" TextWrapping="Wrap"
+                       Text="Keys: 1–9 enter · Shift+digit corner note · Ctrl+digit center note · arrows move · Del erase · Ctrl+Z / Ctrl+Y undo/redo · H hint · Space switch mode · P pause" />
+        </StackPanel>
+    </Grid>
+</UserControl>

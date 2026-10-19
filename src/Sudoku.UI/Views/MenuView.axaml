@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Sudoku.UI.ViewModels"
+             xmlns:model="using:Sudoku.Core.Model"
+             x:Class="Sudoku.UI.Views.MenuView"
+             x:DataType="vm:MenuViewModel">
+    <Panel>
+        <StackPanel Width="300" Spacing="10" Margin="16"
+                    HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="Sudoku" FontSize="48" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,16" />
+
+            <Button Classes="accent" Content="Resume game" Height="48"
+                    IsVisible="{Binding HasSavedGame}" Command="{Binding ResumeCommand}" />
+
+            <TextBlock Text="New game" Classes="muted" Margin="0,12,0,0" />
+            <Button Content="Easy" Height="44" Command="{Binding NewGameCommand}" CommandParameter="{x:Static model:Difficulty.Easy}" />
+            <Button Content="Medium" Height="44" Command="{Binding NewGameCommand}" CommandParameter="{x:Static model:Difficulty.Medium}" />
+            <Button Content="Hard" Height="44" Command="{Binding NewGameCommand}" CommandParameter="{x:Static model:Difficulty.Hard}" />
+            <Button Content="Expert" Height="44" Command="{Binding NewGameCommand}" CommandParameter="{x:Static model:Difficulty.Expert}" />
+
+            <Separator Margin="0,12" />
+            <Button Content="Statistics" Command="{Binding ShowStatsCommand}" />
+            <Button Content="Settings" Command="{Binding ShowSettingsCommand}" />
+        </StackPanel>
+
+        <!-- Shown while a puzzle is generated (only when the pool is empty) -->
+        <Border IsVisible="{Binding IsBusy}" Background="{DynamicResource OverlayBrush}">
+            <Border Classes="card"
+                    Width="320" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel Spacing="14">
+                    <TextBlock Text="{Binding BusyText}" TextWrapping="Wrap" />
+                    <ProgressBar IsIndeterminate="True" />
+                    <Button Content="Cancel" Command="{Binding CancelGenerationCommand}" />
+                </StackPanel>
+            </Border>
+        </Border>
+    </Panel>
+</UserControl>

@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Sudoku.UI.ViewModels"
+             x:Class="Sudoku.UI.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+    <ScrollViewer>
+        <StackPanel MaxWidth="640" Margin="16" Spacing="12">
+            <Grid ColumnDefinitions="Auto,*">
+                <Button Content="‹ Menu" Command="{Binding BackCommand}" />
+                <TextBlock Grid.Column="1" Classes="heading" Text="Settings" Margin="16,0,0,0" VerticalAlignment="Center" />
+            </Grid>
+
+            <Border Classes="card">
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="Show mistakes" FontWeight="SemiBold" />
+                        <TextBlock Classes="muted" TextWrapping="Wrap"
+                                   Text="Mark digits that don't match the solution and count them. Rule conflicts are always shown." />
+                    </StackPanel>
+                    <ToggleSwitch Grid.Column="1" IsChecked="{Binding ShowMistakes}" OnContent="" OffContent="" />
+                </Grid>
+            </Border>
+
+            <Border Classes="card">
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="Remove pencil marks automatically" FontWeight="SemiBold" />
+                        <TextBlock Classes="muted" TextWrapping="Wrap"
+                                   Text="Placing a digit removes it from pencil marks in the same row, column and box." />
+                    </StackPanel>
+                    <ToggleSwitch Grid.Column="1" IsChecked="{Binding AutoRemoveMarks}" OnContent="" OffContent="" />
+                </Grid>
+            </Border>
+
+            <Border Classes="card">
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="Highlight matching digits" FontWeight="SemiBold" />
+                        <TextBlock Classes="muted" TextWrapping="Wrap"
+                                   Text="Selecting a cell highlights every cell with the same digit, including pencil marks." />
+                    </StackPanel>
+                    <ToggleSwitch Grid.Column="1" IsChecked="{Binding HighlightSameDigits}" OnContent="" OffContent="" />
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
