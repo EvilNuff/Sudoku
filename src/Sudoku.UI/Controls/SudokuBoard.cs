@@ -142,17 +142,23 @@ public sealed class SudokuBoard : Control
         return null;
     }
 
-    /// <summary>Number-first mode: the picked number's cells get a strong fill, its notes a medium one, nothing else.</summary>
+    /// <summary>
+    /// Number-first mode: the picked number's cells get a strong fill, its notes a medium one, and every
+    /// cell sharing a row, column or box with a placed copy gets a light tint (the number can't go there).
+    /// </summary>
     private static IBrush? PickedTintFor(BoardRenderState state, Position position, Cell cell, BoardPalette palette)
     {
+        var digit = state.HighlightDigit;
         if (state.Conflicts.Contains(position))
             return palette.ConflictTint;
         if (state.HintCells.Contains(position))
             return palette.HintTint;
-        if (cell.Value == state.HighlightDigit)
+        if (cell.Value == digit)
             return palette.SelectedTint;
-        if (cell.IsEmpty && (cell.CornerMarks.Contains(state.HighlightDigit) || cell.CenterMarks.Contains(state.HighlightDigit)))
+        if (cell.IsEmpty && (cell.CornerMarks.Contains(digit) || cell.CenterMarks.Contains(digit)))
             return palette.SameDigitTint;
+        if (Units.Peers[position.Index].Any(peer => state.Board[peer].Value == digit))
+            return palette.PeerTint;
         return null;
     }
 

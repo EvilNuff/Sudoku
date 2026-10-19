@@ -30,7 +30,7 @@ public sealed record BoardPalette(
         selectedOutline: 0x2F6FD6);
 
     public static BoardPalette Dark { get; } = Create(
-        background: 0x1E2128, peer: 0x262C36, mark: 0x283447, same: 0x2F4566, selected: 0x3D5F91,
+        background: 0x1E2128, peer: 0x2A313D, mark: 0x283447, same: 0x2F4566, selected: 0x3D5F91,
         hint: 0x4A4020, conflict: 0x4A2427, given: 0xE6E6E6, player: 0x8AB4FF, error: 0xFF6B6B,
         markText: 0x9AA3B2, markHighlight: 0xB5D0FF, paused: 0x707886, thin: 0x3A404B, thick: 0xA0A8B5, hintOutline: 0xE0B030,
         selectedOutline: 0x8AB4FF);
