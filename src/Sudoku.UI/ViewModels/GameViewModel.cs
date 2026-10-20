@@ -149,7 +149,18 @@ public sealed partial class GameViewModel : PageViewModel
         switch (key.Action)
         {
             case GameKeyAction.Digit:
-                Enter(key.Digit, key.Mode ?? Mode);
+                PickFromKeyboard(key.Digit, key.Mode);
+                break;
+            case GameKeyAction.Apply:
+                if (_pickedDigit != 0 && _selected is { } target)
+                    _session.Enter(target, _pickedDigit, Mode);
+                break;
+            case GameKeyAction.Dismiss:
+                if (HasHint)
+                    ClearHint();
+                else
+                    PickDigit(0);
+                Refresh();
                 break;
             case GameKeyAction.Erase:
                 Erase();
@@ -258,6 +269,14 @@ public sealed partial class GameViewModel : PageViewModel
         Refresh();
     }
 
+    /// <summary>Hides the current hint and its highlight without applying it.</summary>
+    [RelayCommand]
+    private void DismissHint()
+    {
+        ClearHint();
+        Refresh();
+    }
+
     [RelayCommand]
     private void TogglePause()
     {
@@ -286,11 +305,20 @@ public sealed partial class GameViewModel : PageViewModel
             d.IsPicked = d.Digit == digit;
     }
 
-    private void Enter(int digit, EntryMode mode)
+    /// <summary>
+    /// A number key behaves like tapping the pad. A modifier switches the entry mode first; switching
+    /// mode keeps the number picked instead of toggling it off.
+    /// </summary>
+    private void PickFromKeyboard(int digit, EntryMode? mode)
     {
-        if (_session is null || IsPaused || _selected is not { } position)
+        if (mode is { } requested && requested != Mode)
+        {
+            Mode = requested;
+            PickDigit(digit);
+            Refresh();
             return;
-        _session.Enter(position, digit, mode);
+        }
+        PickNumber(digit);
     }
 
     private void MoveSelection(int rowDelta, int colDelta)

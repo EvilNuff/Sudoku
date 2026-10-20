@@ -13,13 +13,16 @@ public enum GameKeyAction
     Hint,
     CycleMode,
     TogglePause,
+    Dismiss,
+    Apply,
 }
 
-/// <param name="Mode">For digits: an explicit entry mode from a modifier key, or null to use the current mode.</param>
+/// <param name="Mode">For digits: an explicit entry mode from a modifier key, or null to keep the current mode.</param>
 public readonly record struct GameKey(GameKeyAction Action, int Digit = 0, EntryMode? Mode = null, int RowDelta = 0, int ColDelta = 0);
 
 /// <summary>
-/// Keyboard shortcuts. Shift+digit adds a corner mark and Ctrl+digit a center mark.
+/// Keyboard shortcuts. Digits pick a number like the pad; Shift+digit picks it for corner notes and
+/// Ctrl+digit for center notes. Enter applies the picked number to the selected cell.
 /// The platform "command" key (Ctrl on Windows, Cmd on macOS/iPad keyboards) drives undo/redo.
 /// </summary>
 public static class KeyMap
@@ -49,7 +52,9 @@ public static class KeyMap
             Key.Y when command => new GameKey(GameKeyAction.Redo),
             Key.H => new GameKey(GameKeyAction.Hint),
             Key.Space => new GameKey(GameKeyAction.CycleMode),
-            Key.P or Key.Escape => new GameKey(GameKeyAction.TogglePause),
+            Key.P => new GameKey(GameKeyAction.TogglePause),
+            Key.Escape => new GameKey(GameKeyAction.Dismiss),
+            Key.Enter => new GameKey(GameKeyAction.Apply),
             _ => null,
         };
     }

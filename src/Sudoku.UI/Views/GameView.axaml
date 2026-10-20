@@ -74,13 +74,18 @@
 
             <Border Classes="card" IsVisible="{Binding HasHint}">
                 <StackPanel Spacing="6">
-                    <TextBlock Text="{Binding HintTitle}" FontWeight="SemiBold" />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="{Binding HintTitle}" FontWeight="SemiBold" VerticalAlignment="Center" TextWrapping="Wrap" />
+                        <Button Grid.Column="1" Content="Dismiss" Padding="10,3" Margin="8,0,0,0"
+                                ToolTip.Tip="Hide this hint and its highlight (Esc)"
+                                Command="{Binding DismissHintCommand}" />
+                    </Grid>
                     <TextBlock Text="{Binding HintExplanation}" TextWrapping="Wrap" />
                 </StackPanel>
             </Border>
 
             <TextBlock x:Name="KeyHelp" Classes="muted" FontSize="12" TextWrapping="Wrap"
-                       Text="Keys: 1–9 enter · Shift+digit corner note · Ctrl+digit center note · arrows move · Del erase · Ctrl+Z / Ctrl+Y undo/redo · H hint · Space switch mode · P pause" />
+                       Text="Keys: 1–9 pick number (Shift = corner note, Ctrl = center note) · arrows move · Enter place at selected cell · Del erase · Ctrl+Z / Ctrl+Y undo/redo · H hint · Esc dismiss hint · Space switch mode · P pause" />
         </StackPanel>
     </Grid>
 </UserControl>

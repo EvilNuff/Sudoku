@@ -8,7 +8,7 @@ A cross-platform Sudoku game built with [Avalonia UI](https://avaloniaui.net/) o
 - Unlimited undo/redo and erase
 - Auto-highlighting of the selected cell's row, column and box, and of matching digits and pencil marks
 - Rule conflicts always shown, including notes that clash with a placed number (drawn in red); checking against the solution can be turned on in Settings
-- Three-step hints: name the technique, explain it, then apply it
+- Three-step hints (name the technique, explain it, apply it) that build on your notes and show only the steps needed; dismiss a hint with the Dismiss button or Esc
 - Timer that pauses when the game is paused or the app is minimized/backgrounded; autosave and resume
 - Personal bests per difficulty (overall and without hints), averages and totals
 
@@ -30,8 +30,9 @@ dotnet run --project src/Sudoku.Desktop
 Save files go in `%LOCALAPPDATA%\Sudoku`.
 
 ## Keyboard
-1–9 enter a digit · Shift+digit corner note · Ctrl+digit center note · arrow keys move · Delete/Backspace erase ·
-Ctrl+Z / Ctrl+Y undo/redo · H hint · Space switch entry mode · P or Esc pause
+1–9 pick a number, like the pad (Shift+digit for corner notes, Ctrl+digit for center notes) · arrow keys move ·
+Enter place the picked number in the selected cell · Delete/Backspace erase · Ctrl+Z / Ctrl+Y undo/redo · H hint ·
+Esc dismiss the hint (or un-pick the number) · Space switch entry mode · P pause
 
 ## iOS
 The iOS head (`src/Sudoku.iOS`) uses the same `Sudoku.UI` and `Sudoku.Core`. Building it needs:
