@@ -21,18 +21,32 @@ public sealed class HiddenSingle : ITechnique
                 if (cells.Count != 1)
                     continue;
 
-                var target = Position.FromIndex(cells[0]);
-                return new SolveStep(
-                    Name,
-                    Difficulty,
-                    [new Placement(target, digit)],
-                    [],
-                    [.. unit.Cells.Select(Position.FromIndex)],
-                    $"In {unit}, {digit} can only go in {target}: every other cell is blocked by a {digit} in the same row, column or box.");
+                return Build(unit, Position.FromIndex(cells[0]), digit);
             }
         }
         return null;
     }
+
+    /// <summary>Explains a specific placement as a hidden single, if it is one.</summary>
+    public SolveStep? FindFor(CandidateGrid grid, Placement placement)
+    {
+        var index = placement.Position.Index;
+        foreach (var unit in new[] { Units.BoxOf(index), Units.RowOf(index), Units.ColumnOf(index) })
+        {
+            var cells = grid.CellsWithCandidate(unit, placement.Digit).ToList();
+            if (cells is [var only] && only == index)
+                return Build(unit, placement.Position, placement.Digit);
+        }
+        return null;
+    }
+
+    private SolveStep Build(Unit unit, Position target, int digit) => new(
+        Name,
+        Difficulty,
+        [new Placement(target, digit)],
+        [],
+        [.. unit.Cells.Select(Position.FromIndex)],
+        $"In {unit}, {digit} can only go in {target}: every other cell is blocked by a {digit} in the same row, column or box, or has been ruled out.");
 }
 
 /// <summary>A cell has only one candidate left.</summary>
@@ -49,16 +63,22 @@ public sealed class NakedSingle : ITechnique
             if (candidates.Count != 1)
                 continue;
 
-            var target = Position.FromIndex(i);
-            var digit = candidates.First();
-            return new SolveStep(
-                Name,
-                Difficulty,
-                [new Placement(target, digit)],
-                [],
-                [target],
-                $"{target} can only be {digit}: every other digit already appears in its row, column or box, or has been ruled out.");
+            return Build(Position.FromIndex(i), candidates.First());
         }
         return null;
     }
+
+    /// <summary>Explains a specific placement as a naked single, if it is one.</summary>
+    public SolveStep? FindFor(CandidateGrid grid, Placement placement) =>
+        grid.CandidatesAt(placement.Position.Index) == DigitSet.Of(placement.Digit)
+            ? Build(placement.Position, placement.Digit)
+            : null;
+
+    private SolveStep Build(Position target, int digit) => new(
+        Name,
+        Difficulty,
+        [new Placement(target, digit)],
+        [],
+        [target],
+        $"{target} can only be {digit}: every other digit already appears in its row, column or box, or has been ruled out.");
 }

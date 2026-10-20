@@ -166,9 +166,12 @@ public sealed class GameSession
         ArgumentNullException.ThrowIfNull(hint);
         if (IsCompleted)
             return false;
-        return hint.Kind == HintKind.Mistake
-            ? Erase(hint.Target)
-            : SetValue(hint.Target, hint.Digit, countMistake: false);
+        return hint.Kind switch
+        {
+            HintKind.Mistake => Erase(hint.Target),
+            HintKind.NoteMistake => Commit(Board.WithMany(hint.NoteFix)),
+            _ => SetValue(hint.Target, hint.Digit, countMistake: false),
+        };
     }
 
     private bool SetValue(Position position, int digit, bool countMistake = true)
