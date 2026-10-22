@@ -34,13 +34,46 @@ Save files go in `%LOCALAPPDATA%\Sudoku`.
 Enter place the picked number in the selected cell · Delete/Backspace erase · Ctrl+Z / Ctrl+Y undo/redo · H hint ·
 Esc dismiss the hint (or un-pick the number) · Space switch entry mode · P pause
 
-## iOS
-The iOS head (`src/Sudoku.iOS`) uses the same `Sudoku.UI` and `Sudoku.Core`. Building it needs:
-- a Mac with Xcode, either your own or paired from Visual Studio, or a macOS CI runner
-- the .NET `ios` workload
-- an Apple Developer account for running on a device and publishing to the App Store
+## iOS (build on a Mac, run on an iPhone)
+The iOS head (`src/Sudoku.iOS`, bundle id `com.goodnuff.sudoku`) uses the same `Sudoku.UI` and `Sudoku.Core`. It isn't in
+`Sudoku.sln` because it can only be built on macOS.
 
-On the Mac:
+### One-time setup on the Mac
+1. Install **Xcode** from the Mac App Store, open it once and accept the license. The .NET iOS workload needs a matching
+   Xcode (26.x for the current workload); if a build reports a version mismatch, install the version it names.
+2. Install the **.NET 10 SDK** (macOS Arm64) from https://dot.net.
+3. `sudo dotnet workload install ios`
+4. Xcode → Settings → Accounts → **+** → sign in with your Apple ID (this creates a free "Personal Team").
+
+### Get the code
 ```bash
-dotnet build src/Sudoku.iOS -c Release
+brew install gh
+gh auth login
+gh repo clone Sudoku
+cd Sudoku
 ```
+
+Optional check in the Simulator (no signing needed):
+```bash
+dotnet build src/Sudoku.iOS -t:Run -f net10.0-ios
+```
+
+### Prepare the iPhone
+1. Connect it by cable, unlock it and tap **Trust This Computer**.
+2. Settings → Privacy & Security → **Developer Mode** → On (the phone restarts).
+
+### Create the signing profile (free Apple ID)
+In Xcode: File → New → Project → iOS App, with bundle identifier exactly `com.goodnuff.sudoku` and your Personal Team.
+Pick your iPhone as the run target and press Run once, so Xcode creates the provisioning profile. Close that project.
+
+### Build and install
+1. Find the phone's id: `xcrun devicectl list devices` (or Xcode → Window → Devices and Simulators).
+2. Build and run:
+   ```bash
+   dotnet build src/Sudoku.iOS -t:Run -f net10.0-ios -p:RuntimeIdentifier=ios-arm64 -p:_DeviceName=<device-id>
+   ```
+3. First time only, on the phone: Settings → General → **VPN & Device Management** → your Apple ID → Trust.
+
+With a free Apple ID the app stops launching after 7 days; run the build command again to refresh it. A paid Apple
+Developer account ($99/year) makes installs last a year and enables TestFlight and the App Store. To update, `git pull`
+and run the build command again.
