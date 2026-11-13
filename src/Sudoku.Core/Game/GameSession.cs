@@ -1,4 +1,5 @@
 using Sudoku.Core.Model;
+using Sudoku.Core.Solving;
 
 namespace Sudoku.Core.Game;
 
@@ -131,6 +132,26 @@ public sealed class GameSession
         if (IsCompleted || cell.IsGiven || (cell.IsEmpty && !cell.HasMarks))
             return false;
         return Commit(Board.With(position, default));
+    }
+
+    /// <summary>
+    /// Sets every empty cell's corner marks to the digits no number in its row, column or box rules
+    /// out. Existing corner marks are replaced; center marks are kept. One undoable move.
+    /// </summary>
+    public bool AutoNote()
+    {
+        if (IsCompleted)
+            return false;
+
+        var candidates = CandidateGrid.FromValues(Board.CopyValues());
+        var changes = new List<(Position, Cell)>();
+        for (var i = 0; i < Board.CellCount; i++)
+        {
+            var cell = Board[i];
+            if (cell.IsEmpty)
+                changes.Add((Position.FromIndex(i), cell with { CornerMarks = candidates.CandidatesAt(i) }));
+        }
+        return Commit(Board.WithMany(changes));
     }
 
     public bool Undo()

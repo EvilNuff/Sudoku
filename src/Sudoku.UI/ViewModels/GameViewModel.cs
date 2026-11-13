@@ -177,6 +177,9 @@ public sealed partial class GameViewModel : PageViewModel
             case GameKeyAction.Hint:
                 Hint();
                 break;
+            case GameKeyAction.AutoNote:
+                AutoNote();
+                break;
             case GameKeyAction.CycleMode:
                 Mode = (EntryMode)(((int)Mode + 1) % 3);
                 break;
@@ -220,6 +223,13 @@ public sealed partial class GameViewModel : PageViewModel
     {
         if (!IsPaused && _selected is { } position)
             _session?.Erase(position);
+    }
+
+    [RelayCommand]
+    private void AutoNote()
+    {
+        if (!IsPaused)
+            _session?.AutoNote();
     }
 
     [RelayCommand]

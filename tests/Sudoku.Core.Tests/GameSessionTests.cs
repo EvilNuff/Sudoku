@@ -55,6 +55,43 @@ public sealed class GameSessionTests
     }
 
     [TestMethod]
+    public void AutoNote_FillsCornerMarksWithCandidates_AndIsOneUndoableMove()
+    {
+        _session.Enter(Empty, 9, EntryMode.CornerMark);
+        _session.Enter(Empty, 2, EntryMode.CenterMark);
+        var before = _session.Board;
+
+        Assert.IsTrue(_session.AutoNote());
+
+        var board = _session.Board;
+        for (var i = 0; i < Board.CellCount; i++)
+        {
+            var cell = board[i];
+            if (!cell.IsEmpty)
+            {
+                Assert.IsTrue(cell.CornerMarks.IsEmpty, $"Filled cell {i} got corner marks.");
+                continue;
+            }
+            var used = Units.Peers[i].Select(p => board[p].Value).Where(v => v != 0).ToHashSet();
+            var expected = DigitSet.Of([.. Enumerable.Range(1, 9).Where(d => !used.Contains(d))]);
+            Assert.AreEqual(expected, cell.CornerMarks, $"Cell {i}");
+        }
+
+        Assert.AreEqual(DigitSet.Of(2), board[Empty].CenterMarks, "Center marks are kept.");
+        Assert.IsTrue(board[Empty].CornerMarks.Contains(4), "The solution digit is always a candidate.");
+
+        Assert.IsTrue(_session.Undo());
+        Assert.AreEqual(before, _session.Board);
+    }
+
+    [TestMethod]
+    public void AutoNote_ReturnsFalse_WhenNotesAlreadyMatch()
+    {
+        Assert.IsTrue(_session.AutoNote());
+        Assert.IsFalse(_session.AutoNote());
+    }
+
+    [TestMethod]
     public void AutoRemoveMarks_ClearsDigitFromPeers()
     {
         var peer = new Position(0, 3); // same row

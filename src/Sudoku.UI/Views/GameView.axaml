@@ -48,6 +48,9 @@
                             Command="{Binding SetModeCommand}" CommandParameter="{x:Static game:EntryMode.CenterMark}" />
                 </UniformGrid>
                 <TextBlock Text="{Binding ModeDescription}" Classes="muted" FontSize="12" TextWrapping="Wrap" />
+                <Button Content="Auto notes" HorizontalAlignment="Left" Padding="10,3"
+                        ToolTip.Tip="Fill every empty cell's corner notes with the numbers that can go there (N). Undo reverts it."
+                        Command="{Binding AutoNoteCommand}" />
             </StackPanel>
 
             <ItemsControl ItemsSource="{Binding Digits}" Margin="-3,0">
@@ -85,7 +88,7 @@
             </Border>
 
             <TextBlock x:Name="KeyHelp" Classes="muted" FontSize="12" TextWrapping="Wrap"
-                       Text="Keys: 1–9 pick number (Shift = corner note, Ctrl = center note) · arrows move · Enter place at selected cell · Del erase · Ctrl+Z / Ctrl+Y undo/redo · H hint · Esc dismiss hint · Space switch mode · P pause" />
+                       Text="Keys: 1–9 pick number (Shift = corner note, Ctrl = center note) · arrows move · Enter place at selected cell · Del erase · Ctrl+Z / Ctrl+Y undo/redo · H hint · N auto notes · Esc dismiss hint · Space switch mode · P pause" />
         </StackPanel>
     </Grid>
 </UserControl>

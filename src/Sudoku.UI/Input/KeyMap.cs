@@ -15,6 +15,7 @@ public enum GameKeyAction
     TogglePause,
     Dismiss,
     Apply,
+    AutoNote,
 }
 
 /// <param name="Mode">For digits: an explicit entry mode from a modifier key, or null to keep the current mode.</param>
@@ -51,6 +52,7 @@ public static class KeyMap
             Key.Z when command => new GameKey(GameKeyAction.Undo),
             Key.Y when command => new GameKey(GameKeyAction.Redo),
             Key.H => new GameKey(GameKeyAction.Hint),
+            Key.N => new GameKey(GameKeyAction.AutoNote),
             Key.Space => new GameKey(GameKeyAction.CycleMode),
             Key.P => new GameKey(GameKeyAction.TogglePause),
             Key.Escape => new GameKey(GameKeyAction.Dismiss),
